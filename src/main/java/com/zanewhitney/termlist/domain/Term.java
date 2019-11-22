@@ -1,8 +1,11 @@
 package com.zanewhitney.termlist.domain;
 
+import javax.persistence.*;
 import java.util.Locale;
 import java.util.UUID;
 
+@Entity
+@Table(name = "terms")
 public class Term {
 
     public Term(UUID uuid, String title, Locale locale, GrammarFunction function) {
@@ -11,7 +14,7 @@ public class Term {
     public Term(UUID uuid, String title, Locale locale, GrammarFunction function, Gender gender) {
     }
 
-    public Term(UUID uuid, String occurred, Locale us, GrammarFunction pastParticiple, Term definition) {
+    public Term(UUID uuid, String occurred, Locale us, GrammarFunction pastParticiple, UUID definition) {
     }
 
 
@@ -34,8 +37,10 @@ public class Term {
 
     private GrammarFunction grammarFunction;
     private Gender gender;
+    @Id
+    @GeneratedValue
     private UUID uuid;
-    private Term definition;
+    private UUID definition;
     private String title;
     private String language;
 
@@ -59,15 +64,15 @@ public class Term {
         return uuid;
     }
 
-    public void setId(UUID id) {
+    public void setId(java.util.UUID id) {
         this.uuid = id;
     }
 
-    public Term getDefinition() {
+    public UUID getDefinition() {
         return definition;
     }
 
-    public void setDefinition(Term definition) {
+    public void setDefinition(UUID definition) {
         this.definition = definition;
     }
 
