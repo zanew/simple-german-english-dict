@@ -44,7 +44,7 @@ public class TermsControllerTests {
 
     @Test
     public void getTerms_ReturnsTerms() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
+        List<Term> terms = TestUtilities.getThreeDefinitions();
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
@@ -56,7 +56,7 @@ public class TermsControllerTests {
 
     @Test
     public void en_term_HasRelevantProperties() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
+        List<Term> terms = TestUtilities.getThreeDefinitions();
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
@@ -69,7 +69,7 @@ public class TermsControllerTests {
 
     @Test
     public void de_term_HasRelevantProperties() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
+        List<Term> terms = TestUtilities.getThreeDefinitions();
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))

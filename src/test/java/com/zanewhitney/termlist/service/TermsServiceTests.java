@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,8 +34,8 @@ public class TermsServiceTests {
 
     @Test
     public void getTerms_returnsTermsInfo() {
-        given(termsRepository.findTermsBySearchQueryLike("geschehen"))
-                .willReturn(TestUtilities.getThreeDefinitions2());
+        given(termsRepository.findBySearchQueryLike("geschehen", PageRequest.of(0, 3)))
+                .willReturn(TestUtilities.getThreeDefinitions());
 
         List<Term> terms = termsService.getTerms("geschehen", 3);
         assertThat(terms.size() == 3);
@@ -51,8 +52,13 @@ public class TermsServiceTests {
 
     @Test
     public void getTerms_hasDefinition() {
-        given(termsRepository.findTermsBySearchQueryLike("geschehen"))
-                .willReturn(TestUtilities.getThreeDefinitions2());
+        List<Term> threeDefs = TestUtilities.getThreeDefinitions();
+        Term def0 = threeDefs.get(0);
+        Term def1 = threeDefs.get(1);
+        given(termsRepository.getTermById(def0.getDefinition())).willReturn(def1);
+
+        given(termsRepository.findBySearchQueryLike("geschehen", PageRequest.of(0, 3)))
+                .willReturn(threeDefs);
 
         List<Term> terms = termsService.getTerms("geschehen", 3);
         Term occurred = terms.get(0);
@@ -60,16 +66,17 @@ public class TermsServiceTests {
         Term geschehen = termsService.getTermById(occurred.getDefinition());
 
         assertThat(geschehen.getTitle()).isEqualTo("geschehen");
-        assertThat(occurred.getLanguage()).isEqualTo(Locale.GERMAN.getLanguage());
-        assertThat(occurred.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
-        assertThat(occurred.getGender()).isNotNull();
-        assertThat(occurred.getId().toString().length() > 0);
-        assertThat(occurred.getDefinition()).isNotNull();
+        assertThat(geschehen.getLanguage()).isEqualTo(Locale.GERMAN.getLanguage());
+        assertThat(geschehen.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
+        assertThat(geschehen.getGender()).isNull();
+        assertThat(occurred.getId().length() > 0);
+        assertThat(geschehen.getDefinition()).isNotNull();
     }
 
     @Test
     public void getTerms_returnsTermWithDefinition() {
-        given(termsRepository.findTermsBySearchQueryLike("geschehen")).willReturn(TestUtilities.getThreeDefinitions2());
+        given(termsRepository.findBySearchQueryLike("geschehen", PageRequest.of(0, 3)))
+                .willReturn(TestUtilities.getThreeDefinitions());
 
         List<Term> terms = termsService.getTerms("geschehen", 3);
         assertThat(terms.size() == 3);
@@ -87,7 +94,7 @@ public class TermsServiceTests {
 
     @Test
     public void getNonsenseTerm_returnsNothing() {
-        given(termsRepository.findTermsBySearchQueryLike("geschehen")).willReturn(TestUtilities.getThreeDefinitions2());
+        given(termsRepository.findTopTenTermsBySearchQueryLike("geschehen")).willReturn(TestUtilities.getThreeDefinitions());
 
         List<Term> terms = termsService.getTerms("sehtaosuehoh");
         assertThat(terms.size() == 0);

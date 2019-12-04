@@ -26,19 +26,23 @@ public class TestUtilities {
     }
     */
 
-    public static List<Term> getThreeDefinitions2() {
-        Term geschehen = new Term(java.util.UUID.randomUUID(), "geschehen", Locale.GERMANY, Term.GrammarFunction.PAST_PARTICIPLE);
-        Term geschehenNoun = new Term(java.util.UUID.randomUUID(), "Geschehen", Locale.GERMANY, Term.GrammarFunction.NOUN, Term.Gender.NEUTER);
+    public static List<Term> getThreeDefinitions() {
+        Term geschehen = new Term().title("geschehen").language(Locale.GERMANY).grammarFunction(Term.GrammarFunction.PAST_PARTICIPLE);
 
-        Term occurred = new Term(java.util.UUID.randomUUID(), "occurred", Locale.US, Term.GrammarFunction.PAST_PARTICIPLE, geschehen.getId());
-        Term happened = new Term(java.util.UUID.randomUUID(), "happened", Locale.US, Term.GrammarFunction.PAST_PARTICIPLE, geschehen.getId());
-        Term events = new Term(java.util.UUID.randomUUID(), "events", Locale.US, Term.GrammarFunction.COLLECTIVE_NOUN_PLURAL, geschehenNoun.getId());
+        Term occurred = new Term().title("occurred").language(Locale.US).grammarFunction(Term.GrammarFunction.PAST_PARTICIPLE).definition(geschehen.getId());
+        Term happened = new Term().title("happened").language(Locale.US).grammarFunction(Term.GrammarFunction.PAST_PARTICIPLE).definition(geschehen.getId());
 
-        List<Term> Terms = new ArrayList<>();
-        Terms.add(occurred);
-        Terms.add(happened);
-        Terms.add(events);
+        Term geschehenNoun = new Term().title("Geschehen").language(Locale.GERMANY).grammarFunction(Term.GrammarFunction.NOUN).gender(Term.Gender.NEUTER);
+        Term events = new Term().title("events").language(Locale.US).grammarFunction(Term.GrammarFunction.COLLECTIVE_NOUN_PLURAL).definition(geschehenNoun.getId());
+        geschehen.setDefinition(occurred.getId());
 
-        return Terms;
+        List<Term> terms = new ArrayList<>();
+        terms.add(occurred);
+        terms.add(geschehen);
+        terms.add(happened);
+        terms.add(events);
+        terms.add(geschehenNoun);
+
+        return terms;
     }
 }

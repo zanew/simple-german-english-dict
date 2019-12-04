@@ -1,11 +1,13 @@
 package com.zanewhitney.termlist.domain;
 
 import com.zanewhitney.termlist.TestUtilities;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -23,16 +25,26 @@ public class TermsRepositoryTests {
     @Autowired
     private TestEntityManager testEntityManager;
 
+    @Before
+    public void persistTerms() {
+        List<Term> terms = TestUtilities.getThreeDefinitions();
+
+        for (Term term : terms) {
+            testEntityManager.persist(term);
+        }
+        testEntityManager.flush();
+    }
+
     @Test
     public void findTermsByName_ReturnsTerms() {
         // given
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
+        List<Term> terms = TestUtilities.getThreeDefinitions();
         Term term = terms.get(0);
         testEntityManager.persist(term);
         testEntityManager.flush();
 
         // when
-        List<Term> foundTerms = this.repository.findTermsBySearchQueryLike("occurred");
+        List<Term> foundTerms = this.repository.findBySearchQueryLike("occurred", PageRequest.of(0, 3));
         assertThat(foundTerms.size()).isGreaterThan(0);
 
         Term foundTerm = foundTerms.get(0);
@@ -48,12 +60,7 @@ public class TermsRepositoryTests {
 
     @Test
     public void termWithDefinitionId_ReturnsValidTerm() {
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
-        Term term = terms.get(0);
-        testEntityManager.persist(term);
-        testEntityManager.flush();
-
-        List<Term> foundTerms = this.repository.findTermsBySearchQueryLike("occurred");
+        List<Term> foundTerms = this.repository.findBySearchQueryLike("occurred", PageRequest.of(0, 3));
         assertThat(foundTerms.size()).isGreaterThan(0);
 
         Term foundTerm = foundTerms.get(0);
@@ -70,14 +77,8 @@ public class TermsRepositoryTests {
 
     @Test
     public void nonsenseSearchTermReturnsNothing() {
-        // given
-        List<Term> terms = TestUtilities.getThreeDefinitions2();
-        Term term = terms.get(0);
-        testEntityManager.persist(term);
-        testEntityManager.flush();
-
         // when
-        List<Term> foundTerms = this.repository.findTermsBySearchQueryLike("hucreasdkrsdakrsdeoarcsk");
+        List<Term> foundTerms = this.repository.findBySearchQueryLike("hucreasdkrsdakrsdeoarcsk", PageRequest.of(0, 3));
         assertThat(foundTerms.size()).isEqualTo(0);
     }
 }
