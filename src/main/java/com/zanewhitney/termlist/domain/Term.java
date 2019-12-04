@@ -8,15 +8,35 @@ import java.util.UUID;
 @Table(name = "terms")
 public class Term {
 
-    public Term(UUID uuid, String title, Locale locale, GrammarFunction function) {
+    // builders
+    public Term() {
+        this.id = UUID.randomUUID().toString();
     }
 
-    public Term(UUID uuid, String title, Locale locale, GrammarFunction function, Gender gender) {
+    public Term title(String title) {
+        this.title = title;
+        return this;
     }
 
-    public Term(UUID uuid, String occurred, Locale us, GrammarFunction pastParticiple, UUID definition) {
+    public Term language(Locale locale) {
+        this.language = locale.getLanguage();
+        return this;
     }
 
+    public Term grammarFunction(GrammarFunction function) {
+        this.grammarFunction = function;
+        return this;
+    }
+
+    public Term gender(Gender gender) {
+        this.gender = gender;
+        return this;
+    }
+
+    public Term definition(String definition) {
+        this.definition = definition;
+        return this;
+    }
 
     public enum GrammarFunction {
         PAST_PARTICIPLE,
@@ -38,12 +58,12 @@ public class Term {
     private GrammarFunction grammarFunction;
     private Gender gender;
     @Id
-    @GeneratedValue
-    private UUID uuid;
-    private UUID definition;
+    private String id;
+    private String definition;
     private String title;
     private String language;
 
+    @Column(name = "grammar_function", nullable = false)
     public GrammarFunction getGrammarFunction() {
         return grammarFunction;
     }
@@ -52,6 +72,7 @@ public class Term {
         this.grammarFunction = grammarFunction;
     }
 
+    @Column(name = "gender")
     public Gender getGender() {
         return gender;
     }
@@ -60,30 +81,30 @@ public class Term {
         this.gender = gender;
     }
 
-    public UUID getId() {
-        return uuid;
+    @Column(name = "id", nullable = false)
+    public String getId() {
+        return id;
     }
 
-    public void setId(java.util.UUID id) {
-        this.uuid = id;
-    }
-
-    public UUID getDefinition() {
+    @Column(name = "definition")
+    public String getDefinition() {
         return definition;
     }
 
-    public void setDefinition(UUID definition) {
+    public void setDefinition(String definition) {
         this.definition = definition;
     }
 
+    @Column(name = "title", nullable = false)
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+/*    public void setTitle(String title) {
         this.title = title;
-    }
+    }*/
 
+    @Column(name = "language", nullable = false)
     public String getLanguage() {
         return language;
     }
