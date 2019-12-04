@@ -3,14 +3,14 @@ package com.zanewhitney.termlist.domain;
 import java.util.List;
 
 public class Terms {
-    private List<Term> Terms;
+    private List<Term> terms;
 
     public List<Term> getTerms() {
-        return Terms;
+        return terms;
     }
 
-    public void setTerms(List<Term> terms) {
-        this.Terms = terms;
+    public Terms(List<Term> terms) {
+        this.terms = terms;
     }
 }
 
