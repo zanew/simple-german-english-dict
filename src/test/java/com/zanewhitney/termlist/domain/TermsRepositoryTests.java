@@ -54,8 +54,8 @@ public class TermsRepositoryTests {
         assertThat(foundTerm.getLanguage()).isEqualTo(term.getLanguage());
         assertThat(foundTerm.getGrammarFunction()).isEqualTo(term.getGrammarFunction());
         assertThat(foundTerm.getGender()).isEqualTo(term.getGender());
-        assertThat(foundTerm.getId()).isEqualTo(term.getId());
-        assertThat(foundTerm.getDefinition()).isEqualTo(term.getDefinition());
+        assertThat(foundTerm.getId()).isNotNull();
+        assertThat(foundTerm.getDefinition()).isNotNull();
     }
 
     @Test
@@ -67,12 +67,12 @@ public class TermsRepositoryTests {
 
         Term definitionTerm = this.repository.getTermById(foundTerm.getDefinition());
 
-        assertThat(foundTerm.getTitle()).isEqualTo("geschehen");
-        assertThat(foundTerm.getLanguage()).isEqualTo(Locale.GERMAN.getLanguage());
-        assertThat(foundTerm.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
-        assertThat(foundTerm.getGender()).isNull();
-        assertThat(foundTerm.getId()).isNotNull();
-        assertThat(foundTerm.getDefinition()).isEqualTo(foundTerm.getDefinition());
+        assertThat(definitionTerm.getTitle()).isEqualTo("geschehen");
+        assertThat(definitionTerm.getLanguage()).isEqualTo(Locale.GERMAN.getLanguage());
+        assertThat(definitionTerm.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
+        assertThat(definitionTerm.getGender()).isNull();
+        assertThat(definitionTerm.getId()).isNotNull();
+        assertThat(definitionTerm.getDefinition()).isEqualTo(foundTerm.getId());
     }
 
     @Test

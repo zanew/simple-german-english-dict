@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -46,7 +45,7 @@ public class TermsServiceTests {
         assertThat(occurred.getLanguage()).isEqualTo(Locale.ENGLISH.getLanguage());
         assertThat(occurred.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
         assertThat(occurred.getGender()).isNull();
-        assertThat(occurred.getId().toString().length() > 0);
+        assertThat(occurred.getId().length() > 0);
         assertThat(occurred.getDefinition()).isNotNull();
     }
 
@@ -82,14 +81,14 @@ public class TermsServiceTests {
         assertThat(terms.size() == 3);
 
         Term occurred = terms.get(0);
-        UUID occurredUUID = occurred.getDefinition();
+        String occurredUUID = occurred.getDefinition();
 
-        assertThat(occurred.getTitle()).isEqualTo("geschehen");
-        assertThat(occurred.getLanguage()).isEqualTo(Locale.GERMAN.getLanguage());
+        assertThat(occurred.getTitle()).isEqualTo("occurred");
+        assertThat(occurred.getLanguage()).isEqualTo(Locale.US.getLanguage());
         assertThat(occurred.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
         assertThat(occurred.getGender()).isNull();
-        assertThat(occurred.getId().toString().length() > 0);
-        assertThat(occurred.getDefinition()).isNull();
+        assertThat(occurred.getId().length() > 0);
+        assertThat(occurred.getDefinition()).isNotNull();
     }
 
     @Test
@@ -99,14 +98,4 @@ public class TermsServiceTests {
         List<Term> terms = termsService.getTerms("sehtaosuehoh");
         assertThat(terms.size() == 0);
     }
-
-    @Test(expected = TermNotFoundException.class)
-    public void getTerms_whenTermNotFound() {
-        given(termsRepository.findTermsBySearchQueryLike("geschehen")).willReturn(null);
-
-        List<Term> terms = termsService.getTerms("geschehen", 3);
-
-        assertThat(terms.get(0)).isNotNull();
-    }
 }
-
