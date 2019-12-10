@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.BDDMockito.when;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(TermRestController.class)
 public class TermsControllerTests {
 
@@ -53,14 +52,23 @@ public class TermsControllerTests {
 
     @Test
     public void getTerms_ReturnsTerms() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions();
+        List<Term> terms = TestUtilities.getDefinitions(3);
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
-                .andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data", hasSize(3)))
                 .andExpect(jsonPath("$.data[0]").exists())
                 .andExpect(jsonPath("$.data[1]").exists())
                 .andExpect(jsonPath("$.data[2]").exists());
+    }
+
+    @Test
+    public void noProvidedResultCount_ReturnsFiveResults() throws Exception {
+        List<Term> terms = TestUtilities.getDefinitions();
+
+        when(this.termsService.getTerms("geschehen")).thenReturn(terms);
+        this.mockMvc.perform(get("/terms/{text}", "geschehen"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data", hasSize(5)));
     }
 
     @Test
@@ -69,11 +77,11 @@ public class TermsControllerTests {
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
-                .andExpect(jsonPath("$.data[0].attributes.title").value("occurred"))
-                .andExpect(jsonPath("$.data[0].attributes.lang").value("en"))
-                .andExpect(jsonPath("$.data[0].attributes.grammar_type").value("verb"))
-                .andExpect(jsonPath("$.data[0].attributes.gender").doesNotExist())
-                .andExpect(jsonPath("$.data[0].attributes.id").value(greaterThan(0)));
+                .andExpect(jsonPath("$.data[0].title").value("occurred"))
+                .andExpect(jsonPath("$.data[0].language").value("en"))
+                .andExpect(jsonPath("$.data[0].grammar_function").value("past_participle"))
+                .andExpect(jsonPath("$.data[0].gender").doesNotExist())
+                .andExpect(jsonPath("$.data[0].id").exists());
     }
 
     @Test
@@ -82,10 +90,10 @@ public class TermsControllerTests {
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
-                .andExpect(jsonPath("$.data[0].relationships.title").value("geschehen"))
-                .andExpect(jsonPath("$.data[0].relationships.lang").value("de"))
-                .andExpect(jsonPath("$.data[0].relationships.grammar_type").value("verb"))
-                .andExpect(jsonPath("$.data[0].relationships.gender").value("f"))
-                .andExpect(jsonPath("$.data[0].relationships.id").value(greaterThan(0)));
+                .andExpect(jsonPath("$.data[3].title").value("geschehen"))
+                .andExpect(jsonPath("$.data[3].language").value("de"))
+                .andExpect(jsonPath("$.data[3].grammar_function").value("past_participle"))
+                .andExpect(jsonPath("$.data[3].gender").doesNotExist())
+                .andExpect(jsonPath("$.data[3].id").exists());
     }
 }

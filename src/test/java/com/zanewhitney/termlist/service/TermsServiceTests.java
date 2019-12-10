@@ -3,7 +3,6 @@ package com.zanewhitney.termlist.service;
 import com.zanewhitney.termlist.TestUtilities;
 import com.zanewhitney.termlist.domain.Term;
 import com.zanewhitney.termlist.domain.TermsRepository;
-import com.zanewhitney.termlist.web.TermNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,8 +92,6 @@ public class TermsServiceTests {
 
     @Test
     public void getNonsenseTerm_returnsNothing() {
-        given(termsRepository.findTopTenTermsBySearchQueryLike("geschehen")).willReturn(TestUtilities.getThreeDefinitions());
-
         List<Term> terms = termsService.getTerms("sehtaosuehoh");
         assertThat(terms.size() == 0);
     }
