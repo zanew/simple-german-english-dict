@@ -39,11 +39,6 @@ public class TermsControllerTests {
     @MockBean
     private TermsService termsService;
 
-    @Before
-    public void setUp() {
-
-    }
-
     @Test
     public void getTerms_NotFound_Returns404() throws Exception {
         when(this.termsService.getTerms(any())).thenReturn(null);
