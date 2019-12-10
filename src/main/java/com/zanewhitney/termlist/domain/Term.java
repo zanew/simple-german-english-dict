@@ -1,5 +1,9 @@
 package com.zanewhitney.termlist.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import javax.persistence.*;
 import java.util.Locale;
 import java.util.UUID;
@@ -38,6 +42,7 @@ public class Term {
         return this;
     }
 
+
     public enum GrammarFunction {
         PAST_PARTICIPLE,
         VERB,
@@ -46,7 +51,12 @@ public class Term {
         PREPOSITION,
         ADJECTIVE,
         ADVERB,
-        COLLECTIVE_NOUN_PLURAL
+        COLLECTIVE_NOUN_PLURAL;
+
+        @JsonValue
+        public String lowerCase() {
+            return this.toString().toLowerCase();
+        }
     }
 
     public enum Gender {
@@ -64,6 +74,7 @@ public class Term {
     private String language;
 
     @Column(name = "grammar_function", nullable = false)
+    @JsonProperty("grammar_function")
     public GrammarFunction getGrammarFunction() {
         return grammarFunction;
     }
