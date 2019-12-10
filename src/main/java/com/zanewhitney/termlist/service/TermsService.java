@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+@Service
 public class TermsService {
     private final TermsRepository termsRepository;
 
@@ -15,9 +18,12 @@ public class TermsService {
     TermsService(@Qualifier("termsRepository") TermsRepository termsRepository) { this.termsRepository = termsRepository; }
 
     public List<Term> getTerms(String searchTerm, int resultsPerPage) {
-        Pageable rpp = PageRequest.of(0, resultsPerPage);
-
-        return this.termsRepository.findBySearchQueryLike(searchTerm, rpp);
+        if (resultsPerPage == 0) {
+            return this.getTerms(searchTerm);
+        } else {
+            Pageable rpp = PageRequest.of(0, resultsPerPage);
+            return this.termsRepository.findBySearchQueryLike(searchTerm, rpp);
+        }
     }
 
     public List<Term> getTerms(String searchTerm) {
