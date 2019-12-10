@@ -34,7 +34,7 @@ public class TermsServiceTests {
     @Test
     public void getTerms_returnsTermsInfo() {
         given(termsRepository.findBySearchQueryLike("geschehen", PageRequest.of(0, 3)))
-                .willReturn(TestUtilities.getThreeDefinitions());
+                .willReturn(TestUtilities.getDefinitions());
 
         List<Term> terms = termsService.getTerms("geschehen", 3);
         assertThat(terms.size() == 3);
@@ -51,7 +51,7 @@ public class TermsServiceTests {
 
     @Test
     public void getTerms_hasDefinition() {
-        List<Term> threeDefs = TestUtilities.getThreeDefinitions();
+        List<Term> threeDefs = TestUtilities.getDefinitions();
         Term def0 = threeDefs.get(0);
         Term def1 = threeDefs.get(1);
         given(termsRepository.getTermById(def0.getDefinition())).willReturn(def1);
@@ -75,7 +75,7 @@ public class TermsServiceTests {
     @Test
     public void getTerms_returnsTermWithDefinition() {
         given(termsRepository.findBySearchQueryLike("geschehen", PageRequest.of(0, 3)))
-                .willReturn(TestUtilities.getThreeDefinitions());
+                .willReturn(TestUtilities.getDefinitions());
 
         List<Term> terms = termsService.getTerms("geschehen", 3);
         assertThat(terms.size() == 3);

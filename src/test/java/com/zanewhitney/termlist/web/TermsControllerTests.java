@@ -25,6 +25,15 @@ import static org.mockito.BDDMockito.when;
 @WebMvcTest(TermRestController.class)
 public class TermsControllerTests {
 
+    /*
+    Mock Dictionary Expected Format:
+    occurred -> geschehen
+    happened -> geschehen
+    events -> Geschehen
+    geschehen -> occurred
+    Geschehen -> events
+    */
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,7 +65,7 @@ public class TermsControllerTests {
 
     @Test
     public void en_term_HasRelevantProperties() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions();
+        List<Term> terms = TestUtilities.getDefinitions(3);
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))
@@ -69,7 +78,7 @@ public class TermsControllerTests {
 
     @Test
     public void de_term_HasRelevantProperties() throws Exception {
-        List<Term> terms = TestUtilities.getThreeDefinitions();
+        List<Term> terms = TestUtilities.getDefinitions();
 
         when(this.termsService.getTerms("geschehen", 3)).thenReturn(terms);
         this.mockMvc.perform(get("/terms/{text}?n={resultsPerPage}", "geschehen", 3))

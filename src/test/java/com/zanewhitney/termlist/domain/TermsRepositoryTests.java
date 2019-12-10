@@ -27,7 +27,7 @@ public class TermsRepositoryTests {
 
     @Before
     public void persistTerms() {
-        List<Term> terms = TestUtilities.getThreeDefinitions();
+        List<Term> terms = TestUtilities.getDefinitions();
 
         for (Term term : terms) {
             testEntityManager.persist(term);
@@ -38,7 +38,7 @@ public class TermsRepositoryTests {
     @Test
     public void findTermsByName_ReturnsTerms() {
         // given
-        List<Term> terms = TestUtilities.getThreeDefinitions();
+        List<Term> terms = TestUtilities.getDefinitions();
         Term term = terms.get(0);
         testEntityManager.persist(term);
         testEntityManager.flush();

@@ -7,26 +7,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class TestUtilities {
-
-/*    public static Dictionary<Term, Term> getThreeDefinitions() {
-        Dictionary<Term, Term> terms = new Dictionary<Term, Term>();
-
-        Term geschehen = new Term(UUID.randomUUID(), "geschehen", Locale.GERMANY, "verb");
-        Term geschehenNoun = new Term(UUID.randomUUID(), "Geschehen", Locale.GERMANY, "noun", "n");
-
-        Term occurred = new Term(UUID.randomUUID(), "occurred", Locale.US, "verb");
-        Term happened = new Term(UUID.randomUUID(), "happened", Locale.US, "verb");
-        Term events = new Term(UUID.randomUUID(), "events", Locale.US, "collective noun", "plural");
-
-        terms.put(occurred, geschehen);
-        terms.put(happened, geschehen);
-        terms.put(events, geschehenNoun);
-
-        return terms;
+    public static List<Term> getDefinitions() {
+        return TestUtilities.getDefinitions(5);
     }
-    */
 
-    public static List<Term> getThreeDefinitions() {
+    public static List<Term> getDefinitions(int resultsPerPage) {
         Term geschehen = new Term().title("geschehen").language(Locale.GERMANY).grammarFunction(Term.GrammarFunction.PAST_PARTICIPLE);
 
         Term occurred = new Term().title("occurred").language(Locale.US).grammarFunction(Term.GrammarFunction.PAST_PARTICIPLE).definition(geschehen.getId());
@@ -38,11 +23,16 @@ public class TestUtilities {
 
         List<Term> terms = new ArrayList<>();
         terms.add(occurred);
-        terms.add(geschehen);
         terms.add(happened);
         terms.add(events);
+        terms.add(geschehen);
         terms.add(geschehenNoun);
 
-        return terms;
+        List<Term> termsToReturn = new ArrayList<>();
+        for (int i = 0; i < resultsPerPage; i++) {
+            termsToReturn.add(terms.get(i));
+        }
+
+        return termsToReturn;
     }
 }
