@@ -1,54 +1,67 @@
 package com.zanewhitney.termlist;
 
 import com.zanewhitney.termlist.domain.Term;
-import com.zanewhitney.termlist.domain.Terms;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import javax.transaction.Transactional;
+import java.util.List;
+import static org.hamcrest.Matchers.hasSize;
 
-import java.util.Locale;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = TermlistApplication.class)
+@AutoConfigureMockMvc
+@AutoConfigureTestEntityManager
+@Transactional
 public class IntegrationTests {
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    private MockMvc mockMvc;
 
-    @Test
-    public void getTerms_from1to3_ReturnsTerms() {
-        ResponseEntity<Terms> terms = this.testRestTemplate.getForEntity("/terms/{text}?n={resultsPerPage}", Terms.class, "geschehen", 3);
+    @Autowired
+    private TestEntityManager testEntityManager;
 
-        assertThat(terms.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @Before
+    public void persistTerms() {
+        List<Term> terms = TestUtilities.getDefinitions();
 
-        Optional<Terms> body = Optional.ofNullable(terms.getBody());
-
-        body.ifPresent(b -> {
-            assertThat(b.getTerms().size() == 3);
-            Term occurred = b.getTerms().get(0);
-
-            assertThat(occurred.getTitle()).isEqualTo("occurred");
-            assertThat(occurred.getLanguage()).isEqualTo(Locale.ENGLISH.getLanguage());
-            assertThat(occurred.getGrammarFunction()).isEqualTo(Term.GrammarFunction.PAST_PARTICIPLE);
-            assertThat(occurred.getGender()).isEqualTo(null);
-            assertThat(occurred.getId().toString().length() > 0);
-            assertThat(occurred.getDefinition()).isNotNull();
-        });
+        for (Term term : terms) {
+            Term t = testEntityManager.persistFlushFind(term);
+        }
     }
 
     @Test
-    public void nonsense_term_HasNoDefinitions() {
-        ResponseEntity<Terms> terms = this.testRestTemplate.getForEntity("/terms/{text}?n={resultsPerPage}", Terms.class, "uhtnesoahukcbaluetosauh", 100);
+    public void getTerms_ReturnsTerm() throws Exception {
+        this.mockMvc.perform(get("/terms/{text}", "geschehen"))
+                .andExpect(jsonPath("$.data[0].title").value("geschehen"))
+                .andExpect(jsonPath("$.data[0].language").value("de"))
+                .andExpect(jsonPath("$.data[0].grammar_function").value("past_participle"))
+                .andExpect(jsonPath("$.data[0].gender").doesNotExist())
+                .andExpect(jsonPath("$.data[0].id").exists());
 
-        assertThat(terms.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        this.mockMvc.perform(get("/terms/{text}", "occurred"))
+                .andExpect(jsonPath("$.data[0].title").value("occurred"))
+                .andExpect(jsonPath("$.data[0].language").value("en"))
+                .andExpect(jsonPath("$.data[0].grammar_function").value("past_participle"))
+                .andExpect(jsonPath("$.data[0].gender").doesNotExist())
+                .andExpect(jsonPath("$.data[0].id").exists());
+    }
+
+    @Test
+    public void nonsense_term_HasNoDefinitions() throws Exception {
+        this.mockMvc.perform(get("/terms/{text}", "tnhuoasuhesoahtkeboakrb"))
+                .andExpect(status().isNotFound());
     }
 }
