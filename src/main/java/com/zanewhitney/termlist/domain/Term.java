@@ -1,6 +1,5 @@
 package com.zanewhitney.termlist.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -110,10 +109,6 @@ public class Term {
     public String getTitle() {
         return title;
     }
-
-/*    public void setTitle(String title) {
-        this.title = title;
-    }*/
 
     @Column(name = "language", nullable = false)
     public String getLanguage() {

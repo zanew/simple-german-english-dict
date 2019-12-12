@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +13,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import javax.transaction.Transactional;
 import java.util.List;
-import static org.hamcrest.Matchers.hasSize;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,7 +41,7 @@ public class IntegrationTests {
     }
 
     @Test
-    public void getTerms_ReturnsTerm() throws Exception {
+    public void getTerms_ReturnsTerms() throws Exception {
         this.mockMvc.perform(get("/terms/{text}", "geschehen"))
                 .andExpect(jsonPath("$.data[0].title").value("geschehen"))
                 .andExpect(jsonPath("$.data[0].language").value("de"))

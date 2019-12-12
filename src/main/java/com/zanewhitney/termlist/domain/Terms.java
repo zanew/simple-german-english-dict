@@ -1,9 +1,6 @@
 package com.zanewhitney.termlist.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.util.List;
-import java.util.UUID;
 
 public class Terms {
     private List<Term> data;
